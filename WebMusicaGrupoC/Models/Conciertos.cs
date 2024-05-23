@@ -7,6 +7,7 @@ namespace WebMusicaGrupoC.Models;
 public partial class Conciertos
 {
     public int Id { get; set; }
+    [Display(Name ="Fecha/Hora")]
     [DataType(DataType.DateTime)]
     public DateTime? Fecha { get; set; }
 
