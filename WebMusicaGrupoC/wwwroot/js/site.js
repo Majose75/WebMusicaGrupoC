@@ -19,7 +19,7 @@ function getCellValue(row, index) { return $(row).children('td').eq(index).text(
 
 
 
-/*El evento onclick que escucha al clickar sobre el head de alguna columna*/
+//El evento onclick que escucha al clickar sobre el head de alguna columna
 ////$('th').click(function () {
 ////    /*$(".ordenable").on("click", function () {*/
     

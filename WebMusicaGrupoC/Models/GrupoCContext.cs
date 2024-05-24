@@ -69,7 +69,6 @@ public partial class GrupoCContext : DbContext
 
         modelBuilder.Entity<Canciones>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Genero)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -97,7 +96,6 @@ public partial class GrupoCContext : DbContext
 
         modelBuilder.Entity<Conciertos>(entity =>
         {
-            entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Fecha).HasColumnType("datetime");
             entity.Property(e => e.Genero)
                 .HasMaxLength(50)

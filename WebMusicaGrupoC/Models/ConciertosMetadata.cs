@@ -15,5 +15,10 @@ namespace WebMusicaGrupoC.Models
         public string? Genero { get; set; }
 
         public string? Lugar { get; set; }
+        [Display(Name = "Nombre")]
+        public string? Titulo { get; set; }
+        [DataType(DataType.Currency)]
+        //[DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal Precio { get; set; } = 0;
     }
 }

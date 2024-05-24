@@ -48,8 +48,8 @@ namespace WebMusicaGrupoC.Controllers
         // GET: ConciertosGrupos/Create
         public IActionResult Create()
         {
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Id");
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Id");
+            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo");
+            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre");
             return View();
         }
 
@@ -66,8 +66,8 @@ namespace WebMusicaGrupoC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Id", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Id", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 
@@ -84,8 +84,8 @@ namespace WebMusicaGrupoC.Controllers
             {
                 return NotFound();
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Id", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Id", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 
@@ -121,8 +121,8 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Id", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Id", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 

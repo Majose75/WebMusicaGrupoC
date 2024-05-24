@@ -53,7 +53,7 @@ namespace WebMusicaGrupoC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fecha,Genero,Lugar")] Conciertos conciertos)
+        public async Task<IActionResult> Create([Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos conciertos)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace WebMusicaGrupoC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,Genero,Lugar")] Conciertos conciertos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos conciertos)
         {
             if (id != conciertos.Id)
             {
