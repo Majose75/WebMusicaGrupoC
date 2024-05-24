@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebMusicaGrupoC.Models
 {
-    [MetadataType(typeof(ListasCancionesMetadata))]
+    [ModelMetadataType(typeof(ListasCancionesMetadata))]
     public partial class ListasCanciones { }
     public class ListasCancionesMetadata
     {

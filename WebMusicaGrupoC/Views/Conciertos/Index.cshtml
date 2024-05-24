@@ -9,9 +9,13 @@
 <p>
     <a asp-action="Create">Crear Nuevo</a>
 </p>
+<input id="searchInput" placeholder="Escriba para filtrar">
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Titulo)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
             </th>
@@ -21,12 +25,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.Lugar)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Titulo)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fecha)
             </td>
@@ -36,10 +46,13 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Lugar)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Precio)
+                </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
+                    <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
             </td>
         </tr>
 }
