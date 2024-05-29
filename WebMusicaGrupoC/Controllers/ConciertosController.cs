@@ -23,9 +23,19 @@ namespace WebMusicaGrupoC.Controllers
         {
             return View(await _context.Conciertos.ToListAsync());
         }
+        //Listado con los conciertos cuyo Precio sea >30 y fecha posterior al 2015
+        public async Task<IActionResult> IndexListadoConciertos()
+        {
+            var listado1 =
+                from texto in _context.Conciertos
+                where texto.Precio > 30 && /*(texto.Fecha).Value > 2015*/
+                select texto;
+            
+            return View(await listado1.ToListAsync());
+        }
 
-        // GET: Conciertos/Details/5
-        public async Task<IActionResult> Details(int? id)
+    // GET: Conciertos/Details/5
+    public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
