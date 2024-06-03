@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
@@ -22,6 +23,20 @@ namespace WebMusicaGrupoC.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Artistas.ToListAsync());
+        }
+
+        // Listado de Artistas cuya FNacimiento es > 1950
+        public async Task<IActionResult> IndexListadoArtistasMayores()
+        {
+            DateOnly fecha = new(1950, 12, 31);
+            
+            var listado3 =
+                from texto in _context.Artistas
+                where  texto.FechaNac > fecha
+                select texto;
+
+            return View(await listado3.ToListAsync());
+
         }
 
         // GET: Artistas/Details/5

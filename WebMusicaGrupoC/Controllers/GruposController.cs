@@ -24,6 +24,7 @@ namespace WebMusicaGrupoC.Controllers
             return View(await _context.Grupos.ToListAsync());
         }
 
+
         // GET: Grupos/Details/5
         public async Task<IActionResult> Details(int? id)
         {

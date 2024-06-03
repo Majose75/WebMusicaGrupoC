@@ -26,16 +26,17 @@ namespace WebMusicaGrupoC.Controllers
         //Listado con los conciertos cuyo Precio sea >30 y fecha posterior al 2015
         public async Task<IActionResult> IndexListadoConciertos()
         {
+            DateTime fecha = new (2015,12,31);
             var listado1 =
                 from texto in _context.Conciertos
-                where texto.Precio > 30 && /*(texto.Fecha).Value > 2015*/
+                where texto.Precio > 30 && texto.Fecha > fecha
                 select texto;
             
             return View(await listado1.ToListAsync());
         }
 
-    // GET: Conciertos/Details/5
-    public async Task<IActionResult> Details(int? id)
+        // GET: Conciertos/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {

@@ -25,6 +25,18 @@ namespace WebMusicaGrupoC.Controllers
             return View(await grupoCContext.ToListAsync());
         }
 
+        //Listado de los albumes que son de Heavy Metal y de Rock y que el título NO contengan una 'u'.
+        public async Task<IActionResult> IndexListadoAlbumes()
+        {
+            var grupoCContext = _context.Albumes.Include(a => a.Grupos);
+            var listado2 =
+                from texto in _context.Albumes
+                where texto.Genero.ToLower() == "heavy metal" || texto.Genero.ToLower()=="rock" && !texto.Titulo.ToLower().Contains("u")
+                select texto;
+            return View(await listado2.ToListAsync());
+        }
+
+
         // GET: Albumes/Details/5
         public async Task<IActionResult> Details(int? id)
         {

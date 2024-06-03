@@ -13,10 +13,10 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> *@
 </head>
 <body>
-    <header>
+<header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-black border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Web Musica GrupoC</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/purpura.jpg" alt="Logo" width="100"  class="bg-transparent d-inline-block align-text-top"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -32,30 +32,50 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Canciones" asp-action="Index">Canciones</a>
                         </li>
-                        <li class="nav-item">
+@*                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="CancionesConciertos" asp-action="Index">Canciones de Conciertos</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Conciertos" asp-action="Index">Conciertos</a>
                         </li>
-                        <li class="nav-item">
+@*                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ConciertosGrupos" asp-action="Index">Conciertos de Grupos</a>
+                        </li> *@
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Listados Consultas
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Conciertos" asp-action="IndexListadoConciertos">Listado 1</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Albumes" asp-action="IndexListadoAlbumes">Listado 2</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Artistas" asp-action="IndexListadoArtistasMayores">Listado 3</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Listados Conciertos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="ConciertosGrupos" asp-action="Index">Conciertos de Grupos</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="CancionesConciertos" asp-action="Index">Canciones de Conciertos</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="ConciertosGrupos" asp-action="Index">Conciertos de Grupos</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Grupos" asp-action="Index">Grupos</a>
                         </li>
-                        <li class="nav-item">
+@*                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="GruposArtistas" asp-action="Index">Artistas de los Grupos</a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Usuarios" asp-action="Index">Login</a>
                         </li>
-                        <li class="nav-item">
+    @*                     <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Listas" asp-action="Index">Listas</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="ListasCanciones" asp-action="Index">Listas de Canciones</a>
-                        </li>
+                        </li> *@
                     </ul>
                 </div>
             </div>

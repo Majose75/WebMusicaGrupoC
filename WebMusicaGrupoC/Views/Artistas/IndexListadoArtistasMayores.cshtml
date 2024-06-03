@@ -1,15 +1,14 @@
 ﻿@model IEnumerable<WebMusicaGrupoC.Models.Artistas>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "IndexListadoArtistasMayores";
 }
 
-<h1>Indice de Artistas</h1>
+<h1>Listado de Artistas que nacieron después de 1950</h1>
 
 <p>
-    <a asp-action="Create">Crear Nuevo</a>
+    <a asp-action="Index">Volver</a>
 </p>
-<input id="searchInput" placeholder="Escriba para filtrar">
 <table class="table table-striped">
     <thead>
         <tr>
@@ -22,7 +21,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.FechaNac)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -36,11 +34,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaNac)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a> 
-                <a asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a> 
-                <a asp-action="Delete" asp-route-id="@item.Id"><i class="fa-solid fa-trash"></i></a>
             </td>
         </tr>
 }
