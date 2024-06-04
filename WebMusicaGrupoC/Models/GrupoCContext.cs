@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using WebMusicaGrupoC.ViewModels;
 
 namespace WebMusicaGrupoC.Models;
 
@@ -175,4 +176,6 @@ public partial class GrupoCContext : DbContext
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<WebMusicaGrupoC.ViewModels.GrupoAlbumesViewModel> GrupoAlbumesViewModel { get; set; } = default!;
 }

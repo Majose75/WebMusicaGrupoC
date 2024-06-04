@@ -1,0 +1,47 @@
+﻿@model IEnumerable<WebMusicaGrupoC.Models.Albumes>
+
+@{
+    ViewData["Title"] = "IndexListadoAlbumes";
+}
+
+<h1>Listado de Albumes de Heavy Metal que NO contienen 'u'.</h1>
+
+<p>
+    <a asp-action="Index">Volver</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Titulo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Grupos)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fecha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Genero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Grupos.Nombre)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

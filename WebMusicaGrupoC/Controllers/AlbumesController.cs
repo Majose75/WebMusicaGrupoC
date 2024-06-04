@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.ViewModels;
 
 namespace WebMusicaGrupoC.Controllers
 {
@@ -25,14 +26,22 @@ namespace WebMusicaGrupoC.Controllers
             return View(await grupoCContext.ToListAsync());
         }
 
-        //Listado de los albumes que son de Heavy Metal y de Rock y que el título NO contengan una 'u'.
+        //Listado de los albumes por Grupo.
         public async Task<IActionResult> IndexListadoAlbumes()
         {
+
             var grupoCContext = _context.Albumes.Include(a => a.Grupos);
             var listado2 =
                 from texto in _context.Albumes
-                where texto.Genero.ToLower() == "heavy metal" || texto.Genero.ToLower()=="rock" && !texto.Titulo.ToLower().Contains("u")
-                select texto;
+                join texto1 in _context.Grupos on texto.GruposId equals texto1.Id
+                select new GrupoAlbumesViewModel()
+                {
+                    NombreAlbum = texto.Titulo,
+                    GeneroAlbum = texto.Genero,
+                    FechaAlbum = texto.Fecha,
+                    GrupoNombreAlbum=  texto1.Nombre
+                };
+
             return View(await listado2.ToListAsync());
         }
 
