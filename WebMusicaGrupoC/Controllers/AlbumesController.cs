@@ -13,10 +13,12 @@ namespace WebMusicaGrupoC.Controllers
     public class AlbumesController : Controller
     {
         private readonly GrupoCContext _context;
+        private readonly ICreaListaGruposViewModel _builderlista;
 
-        public AlbumesController(GrupoCContext context)
+        public AlbumesController(GrupoCContext context/*, ICreaListaGruposViewModel builderlista*/)
         {
             _context = context;
+            //_builderlista = builderlista;
         }
 
         // GET: Albumes

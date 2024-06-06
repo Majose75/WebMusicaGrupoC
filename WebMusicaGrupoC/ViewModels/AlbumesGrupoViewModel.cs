@@ -2,13 +2,13 @@
 {
     public class AlbumesGrupoViewModel
     {
-        public string Album { get; set; }
-        public List<ListaGrupos> GrupoAlbum { get; set; }
+        public string IdGrupo { get; set; }
+        public List<ListaAlbumes> AlbumGrupo { get; set; }
     }
 
-    public class ListaGrupos
+    public class ListaAlbumes
     {
-        public int GruposId { get;set; }
-        public string GruposNombre { get; set; }
+        public int AlbumesId { get;set; }
+        public string AlbumTitulo { get; set; }
     }
 }

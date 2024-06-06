@@ -41,7 +41,7 @@ namespace WebMusicaGrupoC.ViewModels
             {
                 AlbumesGrupoViewModel ElementoAPoner = new()
                 {
-
+                    //Nombre= _grupoDistinto.Key
                 };
                 coleccionADevolver.Add(ElementoAPoner);
             }

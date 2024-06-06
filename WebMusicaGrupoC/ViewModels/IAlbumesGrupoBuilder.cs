@@ -2,6 +2,6 @@
 {
     public interface IAlbumesGrupoBuilder
     {
-        List<ListaGrupos> DameGrupo(string grupo);
+        //List<ListaGrupos> DameGrupo(string grupo);
     }
 }
