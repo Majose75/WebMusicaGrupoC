@@ -6,14 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
     public class ConciertosController : Controller
     {
-        private readonly GrupoCContext _context;
+        //private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<Conciertos> _context;
 
-        public ConciertosController(GrupoCContext context)
+        public ConciertosController(IGenericRepositorio<Conciertos> context)
         {
             _context = context;
         }
@@ -21,18 +23,18 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Conciertos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Conciertos.ToListAsync());
+            return View( _context.DameTodos());
         }
         //Listado con los conciertos cuyo Precio sea >30 y fecha posterior al 2015
         public async Task<IActionResult> IndexListadoConciertos()
         {
             DateTime fecha = new (2015,12,31);
             var listado1 =
-                from texto in _context.Conciertos
+                from texto in _context.DameTodos()
                 where texto.Precio > 30 && texto.Fecha > fecha
                 select texto;
             
-            return View(await listado1.ToListAsync());
+            return View(listado1);
         }
 
         // GET: Conciertos/Details/5
@@ -43,14 +45,14 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertos = await _context.Conciertos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (conciertos == null)
+            var concierto = _context.DameUno((int)id);
+                
+            if (concierto == null)
             {
                 return NotFound();
             }
 
-            return View(conciertos);
+            return View(concierto);
         }
 
         // GET: Conciertos/Create
@@ -64,15 +66,15 @@ namespace WebMusicaGrupoC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos conciertos)
+        public async Task<IActionResult> Create([Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos concierto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(conciertos);
-                await _context.SaveChangesAsync();
+                _context.AgregarElemento(concierto);
+               
                 return RedirectToAction(nameof(Index));
             }
-            return View(conciertos);
+            return View(concierto);
         }
 
         // GET: Conciertos/Edit/5
@@ -83,12 +85,12 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertos = await _context.Conciertos.FindAsync(id);
-            if (conciertos == null)
+            var concierto = _context.DameUno((int)id);
+            if (concierto == null)
             {
                 return NotFound();
             }
-            return View(conciertos);
+            return View(concierto);
         }
 
         // POST: Conciertos/Edit/5
@@ -96,9 +98,9 @@ namespace WebMusicaGrupoC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos conciertos)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,Genero,Lugar,Titulo,Precio")] Conciertos concierto)
         {
-            if (id != conciertos.Id)
+            if (id != concierto.Id)
             {
                 return NotFound();
             }
@@ -107,12 +109,11 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _context.Update(conciertos);
-                    await _context.SaveChangesAsync();
+                    _context.ModificarElemento((int)id,concierto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ConciertosExists(conciertos.Id))
+                    if (!ConciertosExists(concierto.Id))
                     {
                         return NotFound();
                     }
@@ -123,7 +124,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(conciertos);
+            return View(concierto);
         }
 
         // GET: Conciertos/Delete/5
@@ -134,14 +135,12 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertos = await _context.Conciertos
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (conciertos == null)
+            var concierto =  _context.DameUno((int)id);
+            if (concierto == null)
             {
                 return NotFound();
             }
-
-            return View(conciertos);
+            return View(concierto);
         }
 
         // POST: Conciertos/Delete/5
@@ -149,19 +148,20 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var conciertos = await _context.Conciertos.FindAsync(id);
+            var conciertos = _context.DameUno((int)id);
             if (conciertos != null)
             {
-                _context.Conciertos.Remove(conciertos);
+                _context.EliminarElemento(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ConciertosExists(int id)
         {
-            return _context.Conciertos.Any(e => e.Id == id);
+            if (_context.DameUno((int)id) == null)
+                return false;
+            return true;
         }
     }
 }

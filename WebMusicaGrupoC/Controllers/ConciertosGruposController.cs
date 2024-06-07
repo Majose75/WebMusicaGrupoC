@@ -6,23 +6,41 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
     public class ConciertosGruposController : Controller
     {
-        private readonly GrupoCContext _context;
+        //private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<Grupos> _contextGrupos;
+        private readonly IGenericRepositorio<Conciertos> _contextConciertos;
 
-        public ConciertosGruposController(GrupoCContext context)
+        public ConciertosGruposController(IGenericRepositorio<Grupos> contextGrupos, IGenericRepositorio<Conciertos> contextConciertos)
         {
-            _context = context;
+            _contextGrupos = contextGrupos;
+            _contextConciertos= contextConciertos;
         }
 
         // GET: ConciertosGrupos
         public async Task<IActionResult> Index()
         {
-            var grupoCContext = _context.ConciertosGrupos.Include(c => c.Conciertos).Include(c => c.Grupos);
-            return View(await grupoCContext.ToListAsync());
+            //var grupoCContext = _context.ConciertosGrupos.Include(c => c.Conciertos).Include(c => c.Grupos);
+            //return View(await grupoCContext.ToListAsync());
+            var elemento = _contextConciertos.DameTodos();
+            var elemento2 = _contextGrupos.DameTodos();
+
+            foreach (var item in elemento)
+            {
+                item.ConciertosGrupos=_contextGrupos
+            }
+            //var elemento = _context.DameTodos();
+
+            //foreach (var item in elemento)
+            //{
+            //    item.Grupos = _contextGrupos.DameUno((int)item.GruposId);
+            //}
+            //return View(elemento);
         }
 
         // GET: ConciertosGrupos/Details/5
