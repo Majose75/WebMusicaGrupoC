@@ -7,14 +7,17 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
+using WebMusicaGrupoC.ViewModels;
 
 namespace WebMusicaGrupoC.Controllers
 {
     public class ArtistasController : Controller
     {
-        private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<Artistas> _context;
+       //private readonly IGenericRepositorio<Grupos> _contextGrupos;
 
-        public ArtistasController(GrupoCContext context)
+        public ArtistasController(IGenericRepositorio<Artistas> context)
         {
             _context = context;
         }
@@ -22,7 +25,7 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Artistas
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Artistas.ToListAsync());
+            return View( _context.DameTodos());
         }
 
         // Listado de Artistas cuya FNacimiento es > 1950
@@ -31,11 +34,11 @@ namespace WebMusicaGrupoC.Controllers
             DateOnly fecha = new(1950, 12, 31);
             
             var listado3 =
-                from texto in _context.Artistas
+                from texto in _context.DameTodos()
                 where  texto.FechaNac > fecha
                 select texto;
 
-            return View(await listado3.ToListAsync());
+            return View(listado3);
 
         }
 
@@ -47,8 +50,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = await _context.Artistas
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var artistas = _context.DameUno((int)id);
+                
             if (artistas == null)
             {
                 return NotFound();
@@ -72,8 +75,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(artistas);
-                await _context.SaveChangesAsync();
+                _context.AgregarElemento(artistas);
                 return RedirectToAction(nameof(Index));
             }
             return View(artistas);
@@ -87,7 +89,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = await _context.Artistas.FindAsync(id);
+            var artistas = _context.DameUno((int)id);
             if (artistas == null)
             {
                 return NotFound();
@@ -111,8 +113,7 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _context.Update(artistas);
-                    await _context.SaveChangesAsync();
+                    _context.AgregarElemento(artistas);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -138,13 +139,12 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = await _context.Artistas
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var artistas = _context.DameUno((int)id);
+                
             if (artistas == null)
             {
                 return NotFound();
             }
-
             return View(artistas);
         }
 
@@ -153,19 +153,22 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artistas = await _context.Artistas.FindAsync(id);
+            var artistas = _context.DameUno((int) id);
             if (artistas != null)
             {
-                _context.Artistas.Remove(artistas);
+                _context.EliminarElemento((int)id);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ArtistasExists(int id)
         {
-            return _context.Artistas.Any(e => e.Id == id);
+            if (_context.DameUno((int)id) == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
     }
 }
