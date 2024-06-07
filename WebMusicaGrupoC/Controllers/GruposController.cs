@@ -13,17 +13,18 @@ namespace WebMusicaGrupoC.Controllers
     public class GruposController : Controller
     {
         //private readonly GrupoCContext _context;
-        private readonly IGruposRepositorio _repositorio;
+        //private readonly IGruposRepositorio _repositorio;
+        private readonly IGenericRepositorio<Grupos> _context;
 
-        public GruposController(IGruposRepositorio repositorio)
+        public GruposController(IGenericRepositorio<Grupos> context)
         {
-            _repositorio = repositorio;
+            _context = context;
         }
 
         // GET: Grupos
         public async Task<IActionResult> Index()
         {
-            var elemento = _repositorio.DameTodos();
+            var elemento = _context.DameTodos();
             return View(elemento) ;
         }
 
@@ -36,7 +37,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var grupos = _repositorio.DameUno((int)id);
+            var grupos = _context.DameUno((int)id);
                
             if (grupos == null)
             {
@@ -61,7 +62,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repositorio.AgregarElemento(grupos);
+                _context.AgregarElemento(grupos);
                 return RedirectToAction(nameof(Index));
             }
             return View(grupos);
@@ -75,7 +76,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var grupos = _repositorio.DameUno((int)id); 
+            var grupos = _context.DameUno((int)id); 
             if (grupos == null)
             {
                 return NotFound();
@@ -99,7 +100,7 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _repositorio.ModificarElemento(/*grupos.Id,*/grupos);
+                    _context.ModificarElemento(grupos.Id,grupos);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,8 +122,18 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Grupos/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            _repositorio.EliminarElemento((int)id);
-            return RedirectToAction(nameof(Index));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var grupo = _context.DameUno((int)id);
+            if (grupo == null)
+            {
+                return NotFound();
+            }
+
+            return View(grupo);
         }
 
         // POST: Grupos/Delete/5
@@ -130,13 +141,19 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            _repositorio.EliminarElemento((int)id);
+            var grupo=_context.DameUno((int) id);
+            ;
+            if (grupo != null)
+            {
+                _context.EliminarElemento(id);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool GruposExists(int id)
         {
-            if (_repositorio.DameUno((int)id) == null)
+            if (_context.DameUno((int)id) == null)
                 return false;
             else
             {
