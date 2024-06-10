@@ -10,16 +10,10 @@ using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
-    public class CancionesController : Controller
+    public class CancionesController(IGenericRepositorio<Canciones> context, IGenericRepositorio<Albumes> contextAlbumes) : Controller
     {
-        private readonly IGenericRepositorio<Canciones> _context;
-        private readonly IGenericRepositorio<Albumes> _contextAlbumes;
-
-        public CancionesController(IGenericRepositorio<Canciones> context, IGenericRepositorio<Albumes> contextAlbumes)
-        {
-            _context = context;
-            _contextAlbumes= contextAlbumes;
-        }
+        private readonly IGenericRepositorio<Canciones> _context = context;
+        private readonly IGenericRepositorio<Albumes> _contextAlbumes = contextAlbumes;
 
         // GET: Canciones
         public async Task<IActionResult> Index()
@@ -40,8 +34,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var canciones = await _context.DameUno((int)id);
-            canciones.Albumes = await _contextAlbumes.DameUno((int?)canciones.AlbumesId);
+            var canciones = await _context.DameUno(id);
+            canciones.Albumes = await _contextAlbumes.DameUno(canciones.AlbumesId);
             if (canciones == null)
             {
                 return NotFound();

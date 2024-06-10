@@ -10,15 +10,10 @@ using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
-    public class UsuariosController : Controller
+    public class UsuariosController(IGenericRepositorio<Usuarios> context) : Controller
     {
         //private readonly GrupoCContext _context;
-        private readonly IGenericRepositorio<Usuarios> _context;
-
-        public UsuariosController(IGenericRepositorio<Usuarios> context)
-        {
-            _context = context;
-        }
+        private readonly IGenericRepositorio<Usuarios> _context = context;
 
         // GET: Usuarios
         public async Task<IActionResult> Index()

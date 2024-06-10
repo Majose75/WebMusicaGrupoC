@@ -17,7 +17,7 @@ public partial class Conciertos
 
     public decimal? Precio { get; set; }
 
-    public virtual ICollection<CancionesConciertos> CancionesConciertos { get; set; } = new List<CancionesConciertos>();
+    public virtual ICollection<CancionesConciertos> CancionesConciertos { get; set; } = [];
 
-    public virtual ICollection<ConciertosGrupos> ConciertosGrupos { get; set; } = new List<ConciertosGrupos>();
+    public virtual ICollection<ConciertosGrupos> ConciertosGrupos { get; set; } = [];
 }

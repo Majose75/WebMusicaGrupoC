@@ -9,14 +9,9 @@ using WebMusicaGrupoC.Models;
 
 namespace WebMusicaGrupoC.Controllers
 {
-    public class CancionesConciertosController : Controller
+    public class CancionesConciertosController(GrupoCContext context) : Controller
     {
-        private readonly GrupoCContext _context;
-
-        public CancionesConciertosController(GrupoCContext context)
-        {
-            _context = context;
-        }
+        private readonly GrupoCContext _context = context;
 
         // GET: CancionesConciertos
         public async Task<IActionResult> Index()

@@ -20,7 +20,7 @@ namespace WebMusicaGrupoC.Services.Repositorio
 
         public async Task<bool> EliminarElemento(int Id)
         {
-            var elemento=await DameUno(Id);
+            var elemento = await DameUno(Id);
              _context.Set<T>().Remove(elemento);
              await _context.SaveChangesAsync();
             return true;

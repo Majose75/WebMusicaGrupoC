@@ -8,10 +8,10 @@ namespace WebMusicaGrupoC.ViewModels
             [Display(Name = "Grupo")]
         public string? GrupoNombreAlbum { get; set; }
         [Display(Name = "Album")]
-        public string NombreAlbum { get; set; }
+        public string? NombreAlbum { get; set; }
         [Display(Name = "Fecha Album")]
         public DateOnly? FechaAlbum { get; set;}
             [Display(Name = "Genero")]
-        public string GeneroAlbum { get; set; }
+        public string? GeneroAlbum { get; set; }
     }
 }
