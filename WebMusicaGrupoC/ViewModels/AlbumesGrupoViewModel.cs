@@ -2,7 +2,7 @@
 {
     public class AlbumesGrupoViewModel
     {
-        public string GrupoId { get; set; }
+        public string? GrupoId { get; set; }
         public List<ListaAlbumes> AlbumGrupo { get; set; }
     }
 

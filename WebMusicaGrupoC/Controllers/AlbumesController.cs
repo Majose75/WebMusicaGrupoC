@@ -11,28 +11,23 @@ using WebMusicaGrupoC.ViewModels;
 
 namespace WebMusicaGrupoC.Controllers
 {
-    public class AlbumesController : Controller
+    public class AlbumesController(IGenericRepositorio<Albumes> context, IGenericRepositorio<Grupos> contextGrupos)
+        : Controller
     {
         //private readonly GrupoCContext _context;
-        private readonly IGenericRepositorio<Albumes> _context;
-        private readonly ICreaListaGruposViewModel _builderlista;
-        private readonly IGenericRepositorio<Grupos> _contextGrupos;
+        //private readonly ICreaListaGruposViewModel _builderlista;
 
-        public AlbumesController(IGenericRepositorio<Albumes> context, IGenericRepositorio<Grupos> contextGrupos /*, ICreaListaGruposViewModel builderlista*/)
-        {
-            _context = context;
-            _contextGrupos= contextGrupos;
-            //_builderlista = builderlista;
-        }
+        /*, ICreaListaGruposViewModel builderlista*/
+        //_builderlista = builderlista;
 
         // GET: Albumes
         public async Task<IActionResult> Index()
         {
-            var elemento = await _context.DameTodos();
-
+            var elemento = await context.DameTodos();
+            
             foreach (var item in elemento)
             {
-                item.Grupos = await _contextGrupos.DameUno((int)item.GruposId);
+                item.Grupos = await contextGrupos.DameUno((int?)item.GruposId);
             }
             return View(elemento);
 
@@ -59,27 +54,30 @@ namespace WebMusicaGrupoC.Controllers
 
 
         // GET: Albumes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult?> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var albumes =await _context.DameUno((int)id);
-            albumes.Grupos = await _contextGrupos.DameUno((int)albumes.GruposId);
-   
-            if (albumes == null)
+            var albumes =await context.DameUno((int)id);
+            if (albumes != null)
             {
-                return NotFound();
+                albumes.Grupos = await contextGrupos.DameUno((int?)albumes.GruposId);
+
+                // if (albumes == null)
+                //     return NotFound();
+                return View(albumes);
             }
-            return View(albumes);
+
+            return null;
         }
 
         // GET: Albumes/Create
         public async Task<IActionResult> Create()
         {
-            ViewData["GruposId"] = new SelectList(await _contextGrupos.DameTodos(), "Id", "Nombre");
+            ViewData["GruposId"] = new SelectList(await contextGrupos.DameTodos(), "Id", "Nombre");
             return View();
         }
 
@@ -92,10 +90,10 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.AgregarElemento(albumes);
+                await context.AgregarElemento(albumes);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GruposId"] = new SelectList(await _contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
+            ViewData["GruposId"] = new SelectList(await contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
             return View(albumes);
         }
 
@@ -107,12 +105,12 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var albumes = await _context.DameUno((int)id);
+            var albumes = await context.DameUno((int)id);
             if (albumes == null)
             {
                 return NotFound();
             }
-            ViewData["GruposId"] = new SelectList(await _contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
+            ViewData["GruposId"] = new SelectList(await contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
             return View(albumes);
         }
 
@@ -132,12 +130,12 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                     _context.ModificarElemento((int) id,albumes);
+                     context.ModificarElemento((int) id,albumes);
                     
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AlbumesExists(albumes.Id))
+                    if (!await AlbumesExists(albumes.Id))
                     {
                         return NotFound();
                     }
@@ -148,26 +146,31 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["GruposId"] = new SelectList(await _contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
+            ViewData["GruposId"] = new SelectList(await contextGrupos.DameTodos(), "Id", "Nombre", albumes.GruposId);
             return View(albumes);
         }
 
         // GET: Albumes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult?> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var albumes = await _context.DameUno((int)id);
-            albumes.Grupos = await _contextGrupos.DameUno((int)albumes.GruposId);
-            if (albumes == null)
+            var albumes = await context.DameUno((int)id);
+            if (albumes != null)
             {
-                return NotFound();
+                albumes.Grupos = await contextGrupos.DameUno((int?)albumes.GruposId);
+                if (albumes == null)
+                {
+                    return NotFound();
+                }
+
+                return View(albumes);
             }
 
-            return View(albumes);
+            return null;
         }
 
         // POST: Albumes/Delete/5
@@ -175,19 +178,19 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var albumes = await _context.DameUno(id);
+            var albumes = await context.DameUno(id);
            
             if (albumes != null)
             {
-                 await _context.EliminarElemento(id);
+                 await context.EliminarElemento(id);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AlbumesExists(int id)
+        private async Task<bool> AlbumesExists(int id)
         {
-            if (_context.DameUno(id) == null)
+            if (await context.DameUno(id) == null)
                 return false;
             else
                 return true;

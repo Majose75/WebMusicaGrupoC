@@ -6,23 +6,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
     public class ListasController : Controller
     {
-        private readonly GrupoCContext _context;
+        //private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<Listas> _context;
+        private readonly IGenericRepositorio<Usuarios> _contextUsuarios;
 
-        public ListasController(GrupoCContext context)
+        public ListasController(IGenericRepositorio<Listas> context, IGenericRepositorio<Usuarios> contextUsuarios)
         {
             _context = context;
+            _contextUsuarios = contextUsuarios;
         }
 
         // GET: Listas
         public async Task<IActionResult> Index()
         {
-            var grupoCContext = _context.Listas.Include(l => l.Usuario);
-            return View(await grupoCContext.ToListAsync());
+            var elemento = await _context.DameTodos();
+
+            foreach (var item in elemento)
+            {
+                item.Usuario = await _contextUsuarios.DameUno((int)item.Id);
+            }
+
+            return View(elemento);
         }
 
         // GET: Listas/Details/5
@@ -33,9 +43,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listas = await _context.Listas
-                .Include(l => l.Usuario)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var listas = await _context.DameUno((int)id);
+
             if (listas == null)
             {
                 return NotFound();
@@ -45,9 +54,9 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: Listas/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id");
+            ViewData["UsuarioId"] = new SelectList(await _context.DameTodos(), "Id", "Id");
             return View();
         }
 
@@ -60,11 +69,11 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(listas);
-                await _context.SaveChangesAsync();
+                await _context.AgregarElemento(listas);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", listas.UsuarioId);
+
+            ViewData["UsuarioId"] = new SelectList(await _context.DameTodos(), "Id", "Id", listas.UsuarioId);
             return View(listas);
         }
 
@@ -76,12 +85,13 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listas = await _context.Listas.FindAsync(id);
+            var listas = await _context.DameUno((int)id);
             if (listas == null)
             {
                 return NotFound();
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", listas.UsuarioId);
+
+            ViewData["UsuarioId"] = new SelectList(await _context.DameTodos(), "Id", "Id", listas.UsuarioId);
             return View(listas);
         }
 
@@ -101,12 +111,11 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _context.Update(listas);
-                    await _context.SaveChangesAsync();
+                    _context.ModificarElemento((int)id, listas);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ListasExists(listas.Id))
+                    if (!await ListasExists(listas.Id))
                     {
                         return NotFound();
                     }
@@ -115,9 +124,11 @@ namespace WebMusicaGrupoC.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "Id", "Id", listas.UsuarioId);
+
+            ViewData["UsuarioId"] = new SelectList(await _context.DameTodos(), "Id", "Id", listas.UsuarioId);
             return View(listas);
         }
 
@@ -129,9 +140,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listas = await _context.Listas
-                .Include(l => l.Usuario)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var listas = await _context.DameUno((int)id);
             if (listas == null)
             {
                 return NotFound();
@@ -145,19 +154,23 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var listas = await _context.Listas.FindAsync(id);
+            var listas = await _context.DameUno((int)id);
             if (listas != null)
             {
-                _context.Listas.Remove(listas);
+                await _context.EliminarElemento((int)id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ListasExists(int id)
+        private async Task<bool> ListasExists(int id)
         {
-            return _context.Listas.Any(e => e.Id == id);
+            if (await _context.DameUno((int)id) == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
     }
 }

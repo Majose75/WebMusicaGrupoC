@@ -6,7 +6,7 @@ namespace WebMusicaGrupoC.ViewModels
     {
             public int Id { get; set; }
             [Display(Name = "Grupo")]
-        public string GrupoNombreAlbum { get; set; }
+        public string? GrupoNombreAlbum { get; set; }
         [Display(Name = "Album")]
         public string NombreAlbum { get; set; }
         [Display(Name = "Fecha Album")]

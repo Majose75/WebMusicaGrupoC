@@ -117,7 +117,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArtistasExists(artistas.Id))
+                    if (!await ArtistasExists(artistas.Id))
                     {
                         return NotFound();
                     }
@@ -161,14 +161,12 @@ namespace WebMusicaGrupoC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ArtistasExists(int id)
+        private async Task<bool> ArtistasExists(int id)
         {
-            if (_context.DameUno((int)id) == null)
+            if (await _context.DameUno(id) == null)
                 return false;
             else
-            {
                 return true;
-            }
         }
     }
 }

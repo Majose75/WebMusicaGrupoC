@@ -30,8 +30,8 @@ namespace WebMusicaGrupoC.Controllers
             //var grupoCContext = _context.ConciertosGrupos.Include(c => c.Conciertos).Include(c => c.Grupos);
             //return View(await grupoCContext.ToListAsync());
             var elemento = await _context.DameTodos();
-            var elementoG = await _contextGrupos.DameTodos();
-            var elementoC = await _contextConciertos.DameTodos();
+            //var elementoG = await _contextGrupos.DameTodos();
+            //var elementoC = await _contextConciertos.DameTodos();
 
             foreach (var item in elemento)
             {
@@ -79,7 +79,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.AgregarElemento(conciertosGrupos);
+                await _context.AgregarElemento(conciertosGrupos);
               return RedirectToAction(nameof(Index));
             }
             ViewData["ConciertosId"] = new SelectList(await _context.DameTodos(), "Id", "Titulo", conciertosGrupos.ConciertosId);
@@ -125,7 +125,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ConciertosGruposExists(conciertosGrupos.Id))
+                    if (!await ConciertosGruposExists(conciertosGrupos.Id))
                     {
                         return NotFound();
                     }
@@ -172,9 +172,9 @@ namespace WebMusicaGrupoC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ConciertosGruposExists(int id)
+        private async Task<bool> ConciertosGruposExists(int id)
         {
-            if (_context.DameUno((int)id) == null)
+            if (await _context.DameUno((int)id) == null)
                 return false;
             else
             {

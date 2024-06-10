@@ -6,14 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
     public class UsuariosController : Controller
     {
-        private readonly GrupoCContext _context;
+        //private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<Usuarios> _context;
 
-        public UsuariosController(GrupoCContext context)
+        public UsuariosController(IGenericRepositorio<Usuarios> context)
         {
             _context = context;
         }
@@ -21,7 +23,7 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Usuarios.ToListAsync());
+            return View(await _context.DameTodos());
         }
 
         // GET: Usuarios/Details/5
@@ -32,8 +34,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var usuarios = await _context.DameUno((int)id);
+                  
             if (usuarios == null)
             {
                 return NotFound();
@@ -57,9 +59,8 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(usuarios);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _context.AgregarElemento(usuarios);
+              return RedirectToAction(nameof(Index));
             }
             return View(usuarios);
         }
@@ -72,7 +73,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.Usuarios.FindAsync(id);
+            var usuarios = await _context.DameUno((int) id);
             if (usuarios == null)
             {
                 return NotFound();
@@ -95,13 +96,13 @@ namespace WebMusicaGrupoC.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    _context.Update(usuarios);
-                    await _context.SaveChangesAsync();
+                { 
+                    _context.ModificarElemento(usuarios.Id, usuarios);
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UsuariosExists(usuarios.Id))
+                    if (!await UsuariosExists(usuarios.Id))
                     {
                         return NotFound();
                     }
@@ -123,9 +124,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.Usuarios
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (usuarios == null)
+            var usuarios = await _context.DameUno((int)id);
+  if (usuarios == null)
             {
                 return NotFound();
             }
@@ -138,19 +138,23 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuarios = await _context.Usuarios.FindAsync(id);
+            var usuarios = await _context.DameUno(id);
             if (usuarios != null)
             {
-                _context.Usuarios.Remove(usuarios);
+                await _context.EliminarElemento(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UsuariosExists(int id)
+        private async Task<bool> UsuariosExists(int id)
         {
-            return _context.Usuarios.Any(e => e.Id == id);
+            if (await _context.DameUno((int)id) == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
     }
 }

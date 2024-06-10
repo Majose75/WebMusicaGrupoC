@@ -27,7 +27,7 @@ namespace WebMusicaGrupoC.Controllers
             var elemento = await _context.DameTodos();
             foreach (var item in elemento)
             {
-                item.Albumes = await _contextAlbumes.DameUno((int)item.AlbumesId);
+                item.Albumes = await _contextAlbumes.DameUno((int?)item.AlbumesId);
             }
             return View( elemento);
         }
@@ -41,7 +41,7 @@ namespace WebMusicaGrupoC.Controllers
             }
 
             var canciones = await _context.DameUno((int)id);
-            canciones.Albumes = await _contextAlbumes.DameUno((int)canciones.AlbumesId);
+            canciones.Albumes = await _contextAlbumes.DameUno((int?)canciones.AlbumesId);
             if (canciones == null)
             {
                 return NotFound();
@@ -110,7 +110,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CancionesExists(canciones.Id))
+                    if (!await CancionesExists(canciones.Id))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: Canciones/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult?> Delete(int? id)
         {
             if (id == null)
             {
@@ -134,12 +134,18 @@ namespace WebMusicaGrupoC.Controllers
             }
 
             var canciones = await _context.DameUno((int)id);
-            canciones.Albumes = await _contextAlbumes.DameUno((int)canciones.AlbumesId);
-            if (canciones == null)
+            if (canciones != null)
             {
-                return NotFound();
+                canciones.Albumes = await _contextAlbumes.DameUno((int?)canciones.AlbumesId);
+                if (canciones == null)
+                {
+                    return NotFound();
+                }
+
+                return View(canciones);
             }
-            return View(canciones);
+
+            return null;
         }
 
         // POST: Canciones/Delete/5
@@ -155,14 +161,12 @@ namespace WebMusicaGrupoC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CancionesExists(int id)
+        private async Task<bool> CancionesExists(int id)
         {
-            if (_context.DameUno((int)id) == null)
+            if (await _context.DameUno(id) == null)
                 return false;
             else
-            {
                 return true;
-            }
         }
     }
 }

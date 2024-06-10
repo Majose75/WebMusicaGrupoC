@@ -24,7 +24,7 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Grupos
         public async Task<IActionResult> Index()
         {
-            var elemento = _context.DameTodos();
+            var elemento = await _context.DameTodos();
             return View(elemento) ;
         }
 
@@ -37,7 +37,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var grupos = _context.DameUno((int)id);
+            var grupos = await _context.DameUno((int)id);
                
             if (grupos == null)
             {
@@ -62,7 +62,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.AgregarElemento(grupos);
+                await _context.AgregarElemento(grupos);
                 return RedirectToAction(nameof(Index));
             }
             return View(grupos);
@@ -76,7 +76,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var grupos = _context.DameUno((int)id); 
+            var grupos = await _context.DameUno((int)id); 
             if (grupos == null)
             {
                 return NotFound();
@@ -104,7 +104,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GruposExists(grupos.Id))
+                    if (!await GruposExists(grupos.Id))
                     {
                         return NotFound();
                     }
@@ -127,7 +127,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var grupo = _context.DameUno((int)id);
+            var grupo = await _context.DameUno((int)id);
             if (grupo == null)
             {
                 return NotFound();
@@ -141,19 +141,19 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var grupo=_context.DameUno((int) id);
+            var grupo=await _context.DameUno((int)id);
             ;
             if (grupo != null)
             {
-                _context.EliminarElemento(id);
+                await _context.EliminarElemento(id);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GruposExists(int id)
+        private async Task<bool> GruposExists(int id)
         {
-            if (_context.DameUno((int)id) == null)
+            if (await _context.DameUno((int)id) == null)
                 return false;
             else
             {

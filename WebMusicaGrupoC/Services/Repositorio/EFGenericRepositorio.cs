@@ -13,30 +13,30 @@ namespace WebMusicaGrupoC.Services.Repositorio
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T?> DameUno(int Id)
+        public async Task<T?> DameUno(int? Id)
         {
             return  await _context.Set<T>().FindAsync(Id);
         } 
 
         public async Task<bool> EliminarElemento(int Id)
         {
-            var elemento=DameUno(Id);
-            _context.Set<T>().Remove(elemento as T);
-             _context.SaveChangesAsync();
+            var elemento=await DameUno(Id);
+             _context.Set<T>().Remove(elemento);
+             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> AgregarElemento(T elemento)
         {
-            _context.Set<T>().AddAsync(elemento);
-            _context.SaveChangesAsync();
+            await _context.Set<T>().AddAsync(elemento);
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public void ModificarElemento(int Id, T elemento)
+        public async void ModificarElemento(int Id, T elemento)
         {
-            _context.Entry(elemento).State = EntityState.Modified;
-            _context.SaveChangesAsync();
+              _context.Entry(elemento).State = EntityState.Modified;
+             await _context.SaveChangesAsync();
         }
 
         public async Task<List<T>> Filtra(Expression<Func<T, bool>> predicado)

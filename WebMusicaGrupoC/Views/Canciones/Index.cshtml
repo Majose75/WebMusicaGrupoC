@@ -41,7 +41,7 @@
                 @Html.DisplayFor(modelItem => item.Fecha)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Albumes.Titulo)
+                @Html.DisplayFor(modelItem => item.Albumes!.Titulo)
             </td>
             <td>
                     <a asp-action="Edit" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a> 

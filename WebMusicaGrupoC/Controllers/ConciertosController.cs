@@ -56,7 +56,7 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: Conciertos/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return  View();
         }
@@ -113,7 +113,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ConciertosExists(concierto.Id))
+                    if (!await ConciertosExists(concierto.Id))
                     {
                         return NotFound();
                     }
@@ -157,9 +157,9 @@ namespace WebMusicaGrupoC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ConciertosExists(int id)
+        private async Task<bool> ConciertosExists(int id)
         {
-            if (_context.DameUno((int)id) == null)
+            if (await _context.DameUno((int)id) == null)
                 return false;
             return true;
         }
