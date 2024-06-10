@@ -24,10 +24,10 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Canciones
         public async Task<IActionResult> Index()
         {
-            var elemento = _context.DameTodos();
+            var elemento = await _context.DameTodos();
             foreach (var item in elemento)
             {
-                item.Albumes = _contextAlbumes.DameUno((int)item.AlbumesId);
+                item.Albumes = await _contextAlbumes.DameUno((int)item.AlbumesId);
             }
             return View( elemento);
         }
@@ -40,8 +40,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var canciones = _context.DameUno((int)id);
-            canciones.Albumes = _contextAlbumes.DameUno((int)canciones.AlbumesId);
+            var canciones = await _context.DameUno((int)id);
+            canciones.Albumes = await _contextAlbumes.DameUno((int)canciones.AlbumesId);
             if (canciones == null)
             {
                 return NotFound();
@@ -51,9 +51,9 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: Canciones/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["AlbumesId"] = new SelectList(_context.DameTodos(), "Id", "Titulo");
+            ViewData["AlbumesId"] = new SelectList(await _context.DameTodos(), "Id", "Titulo");
             return View();
         }
 
@@ -66,10 +66,10 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.AgregarElemento(canciones);
+                await _context.AgregarElemento(canciones);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlbumesId"] = new SelectList(_contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
+            ViewData["AlbumesId"] = new SelectList(await _contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
             return View(canciones);
         }
 
@@ -81,12 +81,12 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var canciones = _context.DameUno((int)id);
+            var canciones = await _context.DameUno((int)id);
             if (canciones == null)
             {
                 return NotFound();
             }
-            ViewData["AlbumesId"] = new SelectList(_contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
+            ViewData["AlbumesId"] = new SelectList(await _contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
             return View(canciones);
         }
 
@@ -121,7 +121,7 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AlbumesId"] = new SelectList(_contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
+            ViewData["AlbumesId"] = new SelectList(await _contextAlbumes.DameTodos(), "Id", "Titulo", canciones.AlbumesId);
             return View(canciones);
         }
 
@@ -133,8 +133,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var canciones = _context.DameUno((int)id);
-            canciones.Albumes = _contextAlbumes.DameUno((int)canciones.AlbumesId);
+            var canciones = await _context.DameUno((int)id);
+            canciones.Albumes = await _contextAlbumes.DameUno((int)canciones.AlbumesId);
             if (canciones == null)
             {
                 return NotFound();
@@ -147,10 +147,10 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var canciones = _context.DameUno(id);
+            var canciones = await _context.DameUno(id);
             if (canciones != null)
             {
-                _context.EliminarElemento(id);
+                await _context.EliminarElemento(id);
             }
             return RedirectToAction(nameof(Index));
         }

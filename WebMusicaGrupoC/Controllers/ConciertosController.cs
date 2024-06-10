@@ -23,14 +23,14 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Conciertos
         public async Task<IActionResult> Index()
         {
-            return View( _context.DameTodos());
+            return View( await _context.DameTodos());
         }
         //Listado con los conciertos cuyo Precio sea >30 y fecha posterior al 2015
         public async Task<IActionResult> IndexListadoConciertos()
         {
             DateTime fecha = new (2015,12,31);
             var listado1 =
-                from texto in _context.DameTodos()
+                from texto in await _context.DameTodos()
                 where texto.Precio > 30 && texto.Fecha > fecha
                 select texto;
             
@@ -45,7 +45,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var concierto = _context.DameUno((int)id);
+            var concierto = await _context.DameUno((int)id);
                 
             if (concierto == null)
             {
@@ -56,9 +56,9 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: Conciertos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            return  View();
         }
 
         // POST: Conciertos/Create
@@ -70,7 +70,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.AgregarElemento(concierto);
+                await _context.AgregarElemento(concierto);
                
                 return RedirectToAction(nameof(Index));
             }
@@ -85,7 +85,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var concierto = _context.DameUno((int)id);
+            var concierto = await _context.DameUno((int)id);
             if (concierto == null)
             {
                 return NotFound();
@@ -135,7 +135,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var concierto =  _context.DameUno((int)id);
+            var concierto =  await _context.DameUno((int)id);
             if (concierto == null)
             {
                 return NotFound();
@@ -148,10 +148,10 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var conciertos = _context.DameUno((int)id);
+            var conciertos = await _context.DameUno((int)id);
             if (conciertos != null)
             {
-                _context.EliminarElemento(id);
+                await _context.EliminarElemento(id);
             }
 
             return RedirectToAction(nameof(Index));

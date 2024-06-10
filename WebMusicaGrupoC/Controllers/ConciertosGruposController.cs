@@ -13,11 +13,13 @@ namespace WebMusicaGrupoC.Controllers
     public class ConciertosGruposController : Controller
     {
         //private readonly GrupoCContext _context;
+        private readonly IGenericRepositorio<ConciertosGrupos> _context;
         private readonly IGenericRepositorio<Grupos> _contextGrupos;
         private readonly IGenericRepositorio<Conciertos> _contextConciertos;
 
-        public ConciertosGruposController(IGenericRepositorio<Grupos> contextGrupos, IGenericRepositorio<Conciertos> contextConciertos)
+        public ConciertosGruposController(IGenericRepositorio<ConciertosGrupos> context,IGenericRepositorio<Grupos> contextGrupos, IGenericRepositorio<Conciertos> contextConciertos)
         {
+            _context = context;
             _contextGrupos = contextGrupos;
             _contextConciertos= contextConciertos;
         }
@@ -27,20 +29,19 @@ namespace WebMusicaGrupoC.Controllers
         {
             //var grupoCContext = _context.ConciertosGrupos.Include(c => c.Conciertos).Include(c => c.Grupos);
             //return View(await grupoCContext.ToListAsync());
-            var elemento = _contextConciertos.DameTodos();
-            var elemento2 = _contextGrupos.DameTodos();
+            var elemento = await _context.DameTodos();
+            var elementoG = await _contextGrupos.DameTodos();
+            var elementoC = await _contextConciertos.DameTodos();
 
             foreach (var item in elemento)
             {
-                item.ConciertosGrupos=_contextGrupos
+                item.Conciertos = await _contextConciertos.DameUno((int)item.Id);
             }
-            //var elemento = _context.DameTodos();
-
-            //foreach (var item in elemento)
-            //{
-            //    item.Grupos = _contextGrupos.DameUno((int)item.GruposId);
-            //}
-            //return View(elemento);
+            foreach (var item in elemento)
+            {
+                item.Grupos = await _contextGrupos.DameUno((int)item.Id);
+            }
+            return View(elemento);
         }
 
         // GET: ConciertosGrupos/Details/5
@@ -51,10 +52,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertosGrupos = await _context.ConciertosGrupos
-                .Include(c => c.Conciertos)
-                .Include(c => c.Grupos)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var conciertosGrupos = await _context.DameUno((int)id);
+                
             if (conciertosGrupos == null)
             {
                 return NotFound();
@@ -64,10 +63,10 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: ConciertosGrupos/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateAsync()
         {
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo");
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre");
+            ViewData["ConciertosId"] = new SelectList(await _context.DameTodos(), "Id", "Titulo");
+            ViewData["GruposId"] = new SelectList(await _context.DameTodos(), "Id", "Nombre");
             return View();
         }
 
@@ -80,12 +79,11 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(conciertosGrupos);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.AgregarElemento(conciertosGrupos);
+              return RedirectToAction(nameof(Index));
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(await _context.DameTodos(), "Id", "Titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(await _context.DameTodos(), "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 
@@ -97,13 +95,13 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertosGrupos = await _context.ConciertosGrupos.FindAsync(id);
+            var conciertosGrupos = await _context.DameUno((int)id);
             if (conciertosGrupos == null)
             {
                 return NotFound();
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "Titulo", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(await _context.DameTodos(), "Id", "Titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(await _context.DameTodos(), "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 
@@ -123,8 +121,7 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _context.Update(conciertosGrupos);
-                    await _context.SaveChangesAsync();
+                    _context.ModificarElemento((int)id, conciertosGrupos);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,8 +136,8 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ConciertosId"] = new SelectList(_context.Conciertos, "Id", "titulo", conciertosGrupos.ConciertosId);
-            ViewData["GruposId"] = new SelectList(_context.Grupos, "Id", "Nombre", conciertosGrupos.GruposId);
+            ViewData["ConciertosId"] = new SelectList(await _context.DameTodos(), "Id", "titulo", conciertosGrupos.ConciertosId);
+            ViewData["GruposId"] = new SelectList(await _context.DameTodos(), "Id", "Nombre", conciertosGrupos.GruposId);
             return View(conciertosGrupos);
         }
 
@@ -152,10 +149,8 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var conciertosGrupos = await _context.ConciertosGrupos
-                .Include(c => c.Conciertos)
-                .Include(c => c.Grupos)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var conciertosGrupos = await _context.DameUno((int)id);
+
             if (conciertosGrupos == null)
             {
                 return NotFound();
@@ -169,19 +164,22 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var conciertosGrupos = await _context.ConciertosGrupos.FindAsync(id);
+            var conciertosGrupos = await _context.DameUno((int)id);
             if (conciertosGrupos != null)
             {
-                _context.ConciertosGrupos.Remove(conciertosGrupos);
+                await _context.EliminarElemento(id);
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ConciertosGruposExists(int id)
         {
-            return _context.ConciertosGrupos.Any(e => e.Id == id);
+            if (_context.DameUno((int)id) == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
     }
 }

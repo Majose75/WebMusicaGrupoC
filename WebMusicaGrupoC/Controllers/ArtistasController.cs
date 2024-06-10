@@ -25,7 +25,7 @@ namespace WebMusicaGrupoC.Controllers
         // GET: Artistas
         public async Task<IActionResult> Index()
         {
-            return View( _context.DameTodos());
+            return View( await _context.DameTodos());
         }
 
         // Listado de Artistas cuya FNacimiento es > 1950
@@ -34,7 +34,7 @@ namespace WebMusicaGrupoC.Controllers
             DateOnly fecha = new(1950, 12, 31);
             
             var listado3 =
-                from texto in _context.DameTodos()
+                from texto in await _context.DameTodos()
                 where  texto.FechaNac > fecha
                 select texto;
 
@@ -50,7 +50,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = _context.DameUno((int)id);
+            var artistas = await _context.DameUno((int)id);
                 
             if (artistas == null)
             {
@@ -75,7 +75,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.AgregarElemento(artistas);
+                await _context.AgregarElemento(artistas);
                 return RedirectToAction(nameof(Index));
             }
             return View(artistas);
@@ -89,7 +89,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = _context.DameUno((int)id);
+            var artistas = await _context.DameUno((int)id);
             if (artistas == null)
             {
                 return NotFound();
@@ -113,7 +113,7 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    _context.AgregarElemento(artistas);
+                    _context.ModificarElemento((int)id, artistas);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,7 +139,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var artistas = _context.DameUno((int)id);
+            var artistas = await _context.DameUno((int)id);
                 
             if (artistas == null)
             {
@@ -153,10 +153,10 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var artistas = _context.DameUno((int) id);
+            var artistas = await _context.DameUno((int)id);
             if (artistas != null)
             {
-                _context.EliminarElemento((int)id);
+                await _context.EliminarElemento((int)id);
             }
             return RedirectToAction(nameof(Index));
         }
