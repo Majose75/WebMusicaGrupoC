@@ -15,7 +15,7 @@ public partial class Albumes
 
     public int? GruposId { get; set; }
 
-    public virtual ICollection<Canciones> Canciones { get; set; } = new List<Canciones>();
+    public virtual ICollection<Canciones> Canciones { get; set; } = [];
 
     public virtual Grupos? Grupos { get; set; }
 }

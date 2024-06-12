@@ -17,7 +17,7 @@ public partial class Canciones
 
     public virtual Albumes? Albumes { get; set; }
 
-    public virtual ICollection<CancionesConciertos> CancionesConciertos { get; set; } = new List<CancionesConciertos>();
+    public virtual ICollection<CancionesConciertos> CancionesConciertos { get; set; } = [];
 
-    public virtual ICollection<ListasCanciones> ListasCanciones { get; set; } = new List<ListasCanciones>();
+    public virtual ICollection<ListasCanciones> ListasCanciones { get; set; } = [];
 }

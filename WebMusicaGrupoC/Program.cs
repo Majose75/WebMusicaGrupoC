@@ -9,7 +9,7 @@ builder.Services.AddDbContext<GrupoCContext>(options => options.UseSqlServer("se
 builder.Services.AddControllersWithViews();
 //builder.Services.AddScoped<IGruposRepositorio, EFGruposRepositorio>();
 //builder.Services.AddScoped<IGruposRepositorio, FakeGruposRepositorio>();
-builder.Services.AddScoped(typeof(IGenericRepositorio<>), typeof(EFGenericRepositorio<>));
+builder.Services.AddScoped(typeof(IGenericRepositorio<>), typeof(EfGenericRepositorio<>));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

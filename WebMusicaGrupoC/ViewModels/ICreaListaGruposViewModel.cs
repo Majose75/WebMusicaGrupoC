@@ -2,6 +2,6 @@
 {
     public interface ICreaListaGruposViewModel
     {
-        List<AlbumesGrupoViewModel> dameTodosGrupos();
+        List<AlbumesGrupoViewModel> DameTodosGrupos();
     }
 }

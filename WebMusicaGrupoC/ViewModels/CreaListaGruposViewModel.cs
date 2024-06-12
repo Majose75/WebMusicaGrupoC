@@ -2,19 +2,12 @@
 
 namespace WebMusicaGrupoC.ViewModels
 {
-    public class CreaListaGruposViewModel: ICreaListaGruposViewModel
+    public class CreaListaGruposViewModel(GrupoCContext context)
+        : ICreaListaGruposViewModel
     {
+        //private readonly IAlbumesGrupoBuilder builder = builder;
 
-        private readonly GrupoCContext context;
-        private readonly IAlbumesGrupoBuilder builder;
-
-        public CreaListaGruposViewModel(GrupoCContext context, IAlbumesGrupoBuilder builder)
-        {
-            this.context=context;
-            this.builder=builder;
-        }
-
-        public List<AlbumesGrupoViewModel> dameTodosGrupos()
+        public List<AlbumesGrupoViewModel> DameTodosGrupos()
         {
             //var ProductosDistintos = from p in context.Products.ToList()
             //    group (p) by p.Color into g
@@ -35,15 +28,15 @@ namespace WebMusicaGrupoC.ViewModels
             //}
             //return coleccionADevolver;
 
-            var GruposDistintos = from p in context.Grupos.ToList() group (p) by p.Nombre into g select g;
-            List<AlbumesGrupoViewModel> coleccionADevolver = new();
-            foreach (var _grupoDistinto in GruposDistintos)
+            var gruposDistintos = from p in context.Grupos.ToList() group (p) by p.Nombre into g select g;
+            List<AlbumesGrupoViewModel> coleccionADevolver = [];
+            foreach (var grupoDistinto in gruposDistintos)
             {
-                AlbumesGrupoViewModel ElementoAPoner = new()
+                AlbumesGrupoViewModel elementoAPoner = new()
                 {
                     //Nombre= _grupoDistinto.Key
                 };
-                coleccionADevolver.Add(ElementoAPoner);
+                coleccionADevolver.Add(elementoAPoner);
             }
             return coleccionADevolver;
         }

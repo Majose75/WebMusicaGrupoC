@@ -5,7 +5,7 @@ using WebMusicaGrupoC.Models;
 
 namespace WebMusicaGrupoC.Services.Repositorio
 {
-    public class EFGenericRepositorio<T> :IGenericRepositorio<T> where T : class
+    public class EfGenericRepositorio<T> :IGenericRepositorio<T> where T : class
     {
         private readonly GrupoCContext _context = new();
         public async Task<List<T>> DameTodos()
@@ -13,16 +13,20 @@ namespace WebMusicaGrupoC.Services.Repositorio
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T?> DameUno(int? Id)
+        public async Task<T?> DameUno(int? id)
         {
-            return  await _context.Set<T>().FindAsync(Id);
+            return  await _context.Set<T>().FindAsync(id);
         } 
 
-        public async Task<bool> EliminarElemento(int Id)
+        public async Task<bool> EliminarElemento(int id)
         {
-            var elemento = await DameUno(Id);
-             _context.Set<T>().Remove(elemento);
-             await _context.SaveChangesAsync();
+            var elemento = await DameUno(id);
+            if (elemento != null)
+            {
+                _context.Set<T>().Remove(elemento);
+                await _context.SaveChangesAsync();
+            }
+
             return true;
         }
 
@@ -33,7 +37,7 @@ namespace WebMusicaGrupoC.Services.Repositorio
             return true;
         }
 
-        public async void ModificarElemento(int Id, T elemento)
+        public async void ModificarElemento(int id, T elemento)
         {
               _context.Entry(elemento).State = EntityState.Modified;
              await _context.SaveChangesAsync();

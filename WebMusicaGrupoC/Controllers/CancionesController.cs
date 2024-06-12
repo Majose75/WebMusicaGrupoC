@@ -21,7 +21,7 @@ namespace WebMusicaGrupoC.Controllers
             var elemento = await _context.DameTodos();
             foreach (var item in elemento)
             {
-                item.Albumes = await _contextAlbumes.DameUno((int?)item.AlbumesId);
+                item.Albumes = await _contextAlbumes.DameUno(item.AlbumesId);
             }
             return View( elemento);
         }
@@ -35,10 +35,14 @@ namespace WebMusicaGrupoC.Controllers
             }
 
             var canciones = await _context.DameUno(id);
-            canciones.Albumes = await _contextAlbumes.DameUno(canciones.AlbumesId);
+            
             if (canciones == null)
             {
                 return NotFound();
+            }
+            else
+            {
+                canciones.Albumes = await _contextAlbumes.DameUno(canciones.AlbumesId);
             }
 
             return View(canciones);
