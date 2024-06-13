@@ -61,7 +61,7 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Conciertos" asp-action="IndexListadoConciertos">Listado 1</a></li>
-                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Albumes" asp-action="IndexListadoAlbumes">Listado 2</a></li>
+                                <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Albumes" asp-action="IndexListadoAlbumes">Listado Albumes y Canciones</a></li>
                                 <li><a class="dropdown-item text-dark" asp-area="" asp-controller="Artistas" asp-action="IndexListadoArtistasMayores">Listado 3</a></li>
                             </ul>
                         </li>
@@ -79,12 +79,14 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+<div class="container">
+        
         <main role="main" class="pb-3">
+            
             @RenderBody()
         </main>
-    </div>
-
+</div>
+    
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - Web Musica GrupoC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>

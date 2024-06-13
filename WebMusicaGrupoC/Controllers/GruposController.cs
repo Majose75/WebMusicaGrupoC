@@ -12,8 +12,6 @@ namespace WebMusicaGrupoC.Controllers
 {
     public class GruposController(IGenericRepositorio<Grupos> context) : Controller
     {
-        //private readonly GrupoCContext _context;
-        //private readonly IGruposRepositorio _repositorio;
 
         // GET: Grupos
         public async Task<IActionResult> Index()

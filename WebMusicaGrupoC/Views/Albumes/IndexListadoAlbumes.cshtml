@@ -1,47 +1,52 @@
-﻿@model IEnumerable<WebMusicaGrupoC.ViewModels.GrupoAlbumesViewModel>
+﻿@model IEnumerable<Albumes>
 
 @{
     ViewData["Title"] = "IndexListadoAlbumes";
 }
 
-<h1>IndexListadoAlbumes</h1>
+<h1>Listado Albumes y Canciones</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.GrupoNombreAlbum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NombreAlbum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaAlbum)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GeneroAlbum)
-            </th>
 
+            <th>
+                @Html.DisplayNameFor(model => model.Titulo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Grupos!.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genero)
+            </th>
+            <th>Canciones</th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+
             <td>
-                @Html.DisplayFor(modelItem => item.GrupoNombreAlbum)
+                @Html.DisplayFor(modelItem => item.Titulo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.NombreAlbum)
+                @Html.DisplayFor(modelItem => item.Grupos!.Nombre)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FechaAlbum)
+                @Html.DisplayFor(modelItem => item.Fecha)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GeneroAlbum)
+                @Html.DisplayFor(modelItem => item.Genero)
             </td>
+            <td>
+                @await Component.InvokeAsync("Canciones", item.Id)
+            </td> 
         </tr>
 }
     </tbody>

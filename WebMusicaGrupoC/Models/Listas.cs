@@ -11,7 +11,7 @@ public partial class Listas
 
     public int? UsuarioId { get; set; }
 
-    public virtual ICollection<ListasCanciones> ListasCanciones { get; set; } = new List<ListasCanciones>();
+    public virtual ICollection<ListasCanciones> ListasCanciones { get; set; } = [];
 
     public virtual Usuarios? Usuario { get; set; }
 }

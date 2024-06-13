@@ -9,9 +9,9 @@ public partial class Grupos
 
     public string? Nombre { get; set; }
 
-    public virtual ICollection<Albumes> Albumes { get; set; } = new List<Albumes>();
+    public virtual ICollection<Albumes> Albumes { get; set; } = [];
 
-    public virtual ICollection<ConciertosGrupos> ConciertosGrupos { get; set; } = new List<ConciertosGrupos>();
+    public virtual ICollection<ConciertosGrupos> ConciertosGrupos { get; set; } = [];
 
-    public virtual ICollection<GruposArtistas> GruposArtistas { get; set; } = new List<GruposArtistas>();
+    public virtual ICollection<GruposArtistas> GruposArtistas { get; set; } = [];
 }

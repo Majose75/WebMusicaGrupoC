@@ -13,12 +13,11 @@ namespace WebMusicaGrupoC.Controllers
     public class UsuariosController(IGenericRepositorio<Usuarios> context) : Controller
     {
         //private readonly GrupoCContext _context;
-        private readonly IGenericRepositorio<Usuarios> _context = context;
 
         // GET: Usuarios
         public async Task<IActionResult> Index()
         {
-            return View(await _context.DameTodos());
+            return View(await context.DameTodos());
         }
 
         // GET: Usuarios/Details/5
@@ -29,7 +28,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.DameUno((int)id);
+            var usuarios = await context.DameUno((int)id);
                   
             if (usuarios == null)
             {
@@ -54,7 +53,7 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.AgregarElemento(usuarios);
+                await context.AgregarElemento(usuarios);
               return RedirectToAction(nameof(Index));
             }
             return View(usuarios);
@@ -68,7 +67,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.DameUno((int) id);
+            var usuarios = await context.DameUno((int) id);
             if (usuarios == null)
             {
                 return NotFound();
@@ -92,7 +91,7 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 { 
-                    _context.ModificarElemento(usuarios.Id, usuarios);
+                    context.ModificarElemento(usuarios.Id, usuarios);
                     
                 }
                 catch (DbUpdateConcurrencyException)
@@ -119,7 +118,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var usuarios = await _context.DameUno((int)id);
+            var usuarios = await context.DameUno((int)id);
   if (usuarios == null)
             {
                 return NotFound();
@@ -133,10 +132,10 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var usuarios = await _context.DameUno(id);
+            var usuarios = await context.DameUno(id);
             if (usuarios != null)
             {
-                await _context.EliminarElemento(id);
+                await context.EliminarElemento(id);
             }
 
             return RedirectToAction(nameof(Index));
@@ -144,7 +143,7 @@ namespace WebMusicaGrupoC.Controllers
 
         private async Task<bool> UsuariosExists(int id)
         {
-            if (await _context.DameUno((int)id) == null)
+            if (await context.DameUno((int)id) == null)
                 return false;
             else
             {

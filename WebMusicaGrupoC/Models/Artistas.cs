@@ -13,5 +13,5 @@ public partial class Artistas
 
     public DateOnly? FechaNac { get; set; }
 
-    public virtual ICollection<GruposArtistas> GruposArtistas { get; set; } = new List<GruposArtistas>();
+    public virtual ICollection<GruposArtistas> GruposArtistas { get; set; } = [];
 }

@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
 using WebMusicaGrupoC.Services.Repositorio;
-using WebMusicaGrupoC.ViewModels;
+//using WebMusicaGrupoC.ViewModels;
 
 namespace WebMusicaGrupoC.Controllers
 {
@@ -34,23 +35,45 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         //Listado de los albumes por Grupo.
-        //public async Task<IActionResult> IndexListadoAlbumes()
-        //{
+        public async Task<IActionResult> IndexListadoAlbumes()
+        {
+            //    var elemento = await context.DameTodos();
+            //    foreach (var item in elemento)
+            //    {
+            //        item.Grupos = await contextGrupos.DameUno(item.GruposId);
+            //    }
+            //    //var grupoCContext = context.Albumes.Include(a => a.Grupos);
+            //    var listado2 =
+            //        from texto in context.DameTodos()
+            //        in context.Grupos on texto.GruposId equals texto1.Id
+            //        select new GrupoAlbumesViewModel()
+            //        {
+            //            NombreAlbum = texto.Titulo,
+            //            GeneroAlbum = texto.Genero,
+            //            FechaAlbum = texto.Fecha,
+            //            GrupoNombreAlbum = texto1.Nombre
+            //        };
+            var elemento = await context.DameTodos();
+            foreach (var item in elemento)
+            {
+                item.Grupos = await contextGrupos.DameUno((int?)item.GruposId);
+            }
+            var listado2 =
+                from texto in await context.DameTodos()
+                
+                select texto;
+            
+            return View(listado2);
 
-        //    var grupoCContext = _context.Albumes.Include(a => a.Grupos);
-        //    var listado2 =
-        //        from texto in _context.Albumes
-        //        join texto1 in _context.Grupos on texto.GruposId equals texto1.Id
-        //        select new GrupoAlbumesViewModel()
-        //        {
-        //            NombreAlbum = texto.Titulo,
-        //            GeneroAlbum = texto.Genero,
-        //            FechaAlbum = texto.Fecha,
-        //            GrupoNombreAlbum=  texto1.Nombre
-        //        };
 
-        //    return View(await listado2.ToListAsync());
-        //}
+
+            //var listado3 =
+            //    from texto in await context.DameTodos()
+            //    where texto.FechaNac > fecha
+            //    select texto;
+
+            //return View(listado3);
+        }
 
 
         // GET: Albumes/Details/5

@@ -6,16 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebMusicaGrupoC.Models;
+using WebMusicaGrupoC.Services.Repositorio;
 
 namespace WebMusicaGrupoC.Controllers
 {
-    public class ListasCancionesController(GrupoCContext context) : Controller
+    public class ListasCancionesController
+        (IGenericRepositorio<ListasCanciones> context, 
+            IGenericRepositorio<Canciones> contextCanciones,
+            IGenericRepositorio<Listas> contextListas) : Controller
     {
         // GET: ListasCanciones
         public async Task<IActionResult> Index()
         {
-            var grupoCContext = context.ListasCanciones.Include(l => l.Canciones).Include(l => l.Listas);
-            return View(await grupoCContext.ToListAsync());
+            var elemento = await context.DameTodos();
+
+            foreach (var item in elemento)
+            {
+                item.Canciones = await contextCanciones.DameUno(item.CancionesId);
+                item.Listas = await contextListas.DameUno(item.ListasId);
+            }
+
+            return View(elemento);
         }
 
         // GET: ListasCanciones/Details/5
@@ -26,10 +37,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listasCanciones = await context.ListasCanciones
-                .Include(l => l.Canciones)
-                .Include(l => l.Listas)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var listasCanciones = await context.DameUno(id);
             if (listasCanciones == null)
             {
                 return NotFound();
@@ -39,10 +47,10 @@ namespace WebMusicaGrupoC.Controllers
         }
 
         // GET: ListasCanciones/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CancionesId"] = new SelectList(context.Canciones, "Id", "Id");
-            ViewData["ListasId"] = new SelectList(context.Listas, "Id", "Id");
+            ViewData["CancionesId"] = new SelectList(await context.DameTodos(), "Id", "Id");
+            ViewData["ListasId"] = new SelectList(await context.DameTodos(), "Id", "Id");
             return View();
         }
 
@@ -55,12 +63,11 @@ namespace WebMusicaGrupoC.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Add(listasCanciones);
-                await context.SaveChangesAsync();
+                await context.AgregarElemento(listasCanciones);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CancionesId"] = new SelectList(context.Canciones, "Id", "Id", listasCanciones.CancionesId);
-            ViewData["ListasId"] = new SelectList(context.Listas, "Id", "Id", listasCanciones.ListasId);
+            ViewData["CancionesId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.CancionesId);
+            ViewData["ListasId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.ListasId);
             return View(listasCanciones);
         }
 
@@ -72,13 +79,13 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listasCanciones = await context.ListasCanciones.FindAsync(id);
+            var listasCanciones = await context.DameUno(id);
             if (listasCanciones == null)
             {
                 return NotFound();
             }
-            ViewData["CancionesId"] = new SelectList(context.Canciones, "Id", "Id", listasCanciones.CancionesId);
-            ViewData["ListasId"] = new SelectList(context.Listas, "Id", "Id", listasCanciones.ListasId);
+            ViewData["CancionesId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.CancionesId);
+            ViewData["ListasId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.ListasId);
             return View(listasCanciones);
         }
 
@@ -98,12 +105,11 @@ namespace WebMusicaGrupoC.Controllers
             {
                 try
                 {
-                    context.Update(listasCanciones);
-                    await context.SaveChangesAsync();
+                    context.ModificarElemento(id,listasCanciones);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ListasCancionesExists(listasCanciones.Id))
+                    if (!await ListasCancionesExists(listasCanciones.Id))
                     {
                         return NotFound();
                     }
@@ -114,8 +120,8 @@ namespace WebMusicaGrupoC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CancionesId"] = new SelectList(context.Canciones, "Id", "Id", listasCanciones.CancionesId);
-            ViewData["ListasId"] = new SelectList(context.Listas, "Id", "Id", listasCanciones.ListasId);
+            ViewData["CancionesId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.CancionesId);
+            ViewData["ListasId"] = new SelectList(await context.DameTodos(), "Id", "Id", listasCanciones.ListasId);
             return View(listasCanciones);
         }
 
@@ -127,10 +133,7 @@ namespace WebMusicaGrupoC.Controllers
                 return NotFound();
             }
 
-            var listasCanciones = await context.ListasCanciones
-                .Include(l => l.Canciones)
-                .Include(l => l.Listas)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var listasCanciones = await context.DameUno(id);
             if (listasCanciones == null)
             {
                 return NotFound();
@@ -144,19 +147,24 @@ namespace WebMusicaGrupoC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var listasCanciones = await context.ListasCanciones.FindAsync(id);
+            var listasCanciones = await context.DameUno(id);
             if (listasCanciones != null)
             {
-                context.ListasCanciones.Remove(listasCanciones);
+                await context.EliminarElemento(id);
             }
 
-            await context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ListasCancionesExists(int id)
+        private async Task<bool> ListasCancionesExists(int id)
         {
-            return context.ListasCanciones.Any(e => e.Id == id);
+            if (await context.DameUno((int)id) == null)
+                return false;
+            else
+            {
+                return true;
+            }
         }
     }
 }
